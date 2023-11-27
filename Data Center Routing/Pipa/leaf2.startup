@@ -1,0 +1,15 @@
+ifconfig eth0 10.0.0.4/30 up
+
+ip link add vtep5010 type vxlan id 5010 dev eth0 dstport 4789 local 10.0.0.5 nolearning
+ip link set up dev vtep5010
+
+ip link add br100 type bridge
+
+ip link set dev vtep5010 master br100
+ip link set dev eth1 master br100
+ip link set dev br100 type bridge vlan_filtering 1
+bridge vlan add vid 10 dev vtep5010 pvid untagged
+bridge vlan add vid 10 dev eth1 pvid untagged
+ip link set up dev br100
+
+/etc/init.d/frr start

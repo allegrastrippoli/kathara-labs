@@ -1,0 +1,5 @@
+ifconfig eth0 120.20.1.2 netmask 255.255.255.0 up
+ifconfig eth1 120.20.2.2  netmask 255.255.255.0 up
+ifconfig eth2 120.20.3.2 netmask 255.255.255.0 up
+/etc/init.d/frr start
+

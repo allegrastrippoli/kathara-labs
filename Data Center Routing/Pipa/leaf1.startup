@@ -1,0 +1,26 @@
+ifconfig eth0 10.0.0.1/30 up
+
+# Setting up VXLAN interfaces - creo VTEP
+#
+#     nome: vtep5010 tipo:VXLAN id 5010 dev loopback                # source address
+ip link add vtep5010 type vxlan id 5010 dev eth0 dstport 4789 local 10.0.0.1 nolearning
+ip link set up dev vtep5010
+
+
+# Creating the companion bridge
+ip link add br100 type bridge
+
+# Attach interfaces to the bridge
+ip link set dev vtep5010 master br100                  # l'interfaccia vtep5010 è attaccata al bridge 
+ip link set dev eth1 master br100                      # l'interfaccia eth1 è attaccata al bridge 
+
+# Enable bridge vlans
+ip link set dev br100 type bridge vlan_filtering 1
+bridge vlan add vid 10 dev vtep5010 pvid untagged      # pacchetti entrano/escono untagged dall'interfaccia vtep5010
+                                                       # e fanno parte della vlan 10
+bridge vlan add vid 10 dev eth1 pvid untagged          # pacchetti entrano/escono untagged dall'interfaccia eth1
+                                                       # e fanno parte della vlan 10
+ip link set up dev br100
+
+
+/etc/init.d/frr start

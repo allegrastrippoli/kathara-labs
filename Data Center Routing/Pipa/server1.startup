@@ -1,0 +1,8 @@
+ifconfig eth0 192.168.10.2 up
+ip link set dev eth0 mtu 1450
+
+# vanno configurate le VLAN qui???
+
+/etc/init.d/apache2 start
+
+

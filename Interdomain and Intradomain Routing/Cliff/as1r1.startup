@@ -1,0 +1,12 @@
+/sbin/ifconfig eth0 1.20.0.1 netmask 255.255.255.252 up
+/sbin/ifconfig eth1 1.0.0.1 netmask 255.255.255.0 up
+/sbin/ifconfig eth2 1.10.0.1 netmask 255.255.255.252 up
+
+ip tunnel add r1r2 mode ipip remote 2.2.0.1 local 1.10.0.1 ttl 10
+ip link set r1r2 multicast on
+ip addr add dev r1r2 30.0.0.1 peer 30.0.0.2
+ifconfig r1r2 up
+
+ip route add 2.2.0.0/24 dev r1r2
+
+/etc/init.d/frr start
